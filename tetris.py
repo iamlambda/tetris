@@ -1,3 +1,4 @@
+from random import sample
 from grille import Grille
 from piece import Piece
 
@@ -11,8 +12,9 @@ class Tetris:
         """
         initialise la grille et la piece
         """
-        self.grille = Grille()
-        self.piece = Piece(self.grille)
+        self.nouvelle_grille()
+        self.sac = []
+        self.nouvelle_piece()
         self.hold = None
 
         self.score = 0
@@ -45,12 +47,17 @@ class Tetris:
         """
         self.grille = Grille()
 
-    def nouvelle_piece(self, forme=None) -> None:
+    def nouvelle_piece(self) -> None:
         """
         genere une nouvelle piece
         """
-        # TODO: implementer la generation de piece de Tetris
-        self.piece = Piece(self.grille, forme)
+        # on utilise un sac pour generer les pieces aleatoires
+        # on le reremplit avant qu'il y en ai moins de 7 (pour l'affichage des pieces suivantes)
+        if len(self.sac) < 7:
+            formes = ["J", "L", "S", "T", "Z", "I", "O"]
+            self.sac += sample(formes, 7)
+        # on prend la premiere piece du sac
+        self.piece = Piece(self.sac.pop(0), self.grille)
 
     def placer_piece(self) -> None:
         """
@@ -96,7 +103,7 @@ class Tetris:
             else:
                 forme = self.hold
                 self.hold = self.piece.forme
-                self.nouvelle_piece(forme)
+                self.piece = Piece(forme, self.grille)
             self.hold_possible = False
 
 
