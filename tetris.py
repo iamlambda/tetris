@@ -13,9 +13,13 @@ class Tetris:
         """
         self.grille = Grille()
         self.piece = Piece(self.grille)
+        self.hold = None
+
         self.score = 0
 
-    def affiche(self) -> None:
+        self.hold_possible = True
+
+    def afficher(self) -> None:
         """
         affiche la grille et la piece (testing)
         """
@@ -32,7 +36,21 @@ class Tetris:
                     print(self.grille.grille[i][j], end="")
 
             print()
+        print("hold:", self.hold)
         print("-" * 20)
+
+    def nouvelle_grille(self) -> None:
+        """
+        genere une nouvelle grille
+        """
+        self.grille = Grille()
+
+    def nouvelle_piece(self, forme=None) -> None:
+        """
+        genere une nouvelle piece
+        """
+        # TODO: implementer la generation de piece de Tetris
+        self.piece = Piece(self.grille, forme)
 
     def placer_piece(self) -> None:
         """
@@ -43,12 +61,14 @@ class Tetris:
         self.grille.placer(self.piece)
         self.grille.verifier_lignes()
         # on genere une nouvelle piece
-        self.piece.nouvelle_piece()
+        self.nouvelle_piece()
         if not (self.grille.peut_placer(self.piece)):
             print("perdu")
             exit()
+        # on redonne la possibilité de hold
+        self.hold_possible = True
 
-    def deplacer(self, direction: str) -> None:
+    def deplacer_piece(self, direction: str) -> None:
         """
         deplace la piece dans la direction indiquee
         """
@@ -59,31 +79,50 @@ class Tetris:
         elif direction == "bas":
             self.piece.deplacer(0, 1)
 
-    def tourner(self, horaire: bool) -> None:
+    def tourner_piece(self, horaire: bool) -> None:
         """
         effectue une rotation dans le sens indique (horaire ou non)
         """
         self.piece.tourner(horaire)
+
+    def hold_piece(self) -> None:
+        """
+        place la forme de la piece dans le hold
+        """
+        if self.hold_possible:
+            if self.hold is None:
+                self.hold = self.piece.forme
+                self.nouvelle_piece()
+            else:
+                forme = self.hold
+                self.hold = self.piece.forme
+                self.nouvelle_piece(forme)
+            self.hold_possible = False
 
 
 if __name__ == "__main__":
     # testing
     tetris = Tetris()
     while True:
-        tetris.affiche()
-        depl = int(input("0:rien, 1:gauche, 2:droite, 3:bas, 4:placer ?"))
-        rota = int(input("0:rien, 1:horaire, 2:antihoraire ?"))
+        tetris.afficher()
 
-        if depl == 1:
-            tetris.deplacer(-1, 0)
-        elif depl == 2:
-            tetris.deplacer(1, 0)
-        elif depl == 3:
-            tetris.deplacer(0, 1)
-        elif depl == 4:
-            tetris.placer_piece()
+        hold = int(input("0:rien, 1:hold ? "))
+        rota = int(input("0:rien, 1:horaire, 2:antihoraire ? "))
+        depl = int(input("0:rien, 1:gauche, 2:droite, 3:bas, 4:placer ? "))
+
+        if hold == 1:
+            tetris.hold_piece()
 
         if rota == 1:
-            tetris.tourner(True)
+            tetris.tourner_piece(True)
         elif rota == 2:
-            tetris.tourner(False)
+            tetris.tourner_piece(False)
+
+        if depl == 1:
+            tetris.deplacer_piece("gauche")
+        elif depl == 2:
+            tetris.deplacer_piece("droite")
+        elif depl == 3:
+            tetris.deplacer_piece("bas")
+        elif depl == 4:
+            tetris.placer_piece()
