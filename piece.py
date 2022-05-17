@@ -67,28 +67,22 @@ class Piece:
         },
     }
 
-    def __init__(self, grille) -> None:
+    def __init__(self, grille, forme=None) -> None:
         """
         initialise la piece
         """
         # choix aleatoire de la forme
-        self.forme = random.choice(self.formes)
+        self.forme = forme if forme else random.choice(self.formes)
         self.piece = self.pieces[self.forme]
         self.table = self.table_decalages[
             "JLSTZ" if self.forme in "JLSTZ" else self.forme
         ]
 
-        self.x, self.y = (2, 19) if self.forme == "I" else (3, 20)
+        self.x, self.y = (2, 18) if self.forme == "I" else (3, 19)
         self.taille = len(self.piece)
         self.etat = 0  # 0 a 3, incremente de 1 dans le sens horaire
 
         self.grille = grille
-
-    def nouvelle_piece(self) -> None:
-        """
-        genere une nouvelle piece
-        """
-        self.__init__(self.grille)
 
     def deplacer(self, dx: int, dy: int) -> None:
         """

@@ -9,12 +9,6 @@ class Grille:
         """
         self.grille = [[0 for i in range(10)] for j in range(40)]
 
-    def nouvelle_grille(self) -> None:
-        """
-        initialise la grille avec des 0
-        """
-        self.grille = [[0 for i in range(10)] for j in range(40)]
-
     def supprimer_ligne(self, ligne: int) -> None:
         """
         supprime une ligne
