@@ -56,18 +56,18 @@ class Piece:
         "I": {
             0: [(0, 0), (-1, 0), (2, 0), (-1, 0), (2, 0)],
             1: [(-1, 0), (0, 0), (0, 0), (0, 1), (0, -2)],
-            2: [(-1, -1), (1, 1), (-2, 1), (1, 0), (-2, 0)],
-            3: [(0, -1), (0, 1), (0, 1), (0, -1), (0, 2)],
+            2: [(-1, 1), (1, 1), (-2, 1), (1, 0), (-2, 0)],
+            3: [(0, 1), (0, 1), (0, 1), (0, -1), (0, 2)],
         },
         "O": {
             0: [(0, 0)],
-            1: [(0, 1)],
-            2: [(-1, 1)],
+            1: [(0, -1)],
+            2: [(-1, -1)],
             3: [(-1, 0)],
         },
     }
 
-    def __init__(self, grille, forme=None) -> None:
+    def __init__(self, forme, grille) -> None:
         """
         initialise la piece
         """
@@ -140,9 +140,9 @@ class Piece:
             dy = self.table[etat_initial][i][1] - self.table[etat_final][i][1]
 
             # on teste si le kick est possible
-            self.deplacer(dx, dy)
+            self.deplacer(dx, -dy)
             if self.grille.peut_placer(self):
                 return True
-            self.deplacer(-dx, -dy)
+            self.deplacer(-dx, dy)
 
         return False
