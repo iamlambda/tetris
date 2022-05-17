@@ -74,7 +74,9 @@ class Piece:
         # choix aleatoire de la forme
         self.forme = random.choice(self.formes)
         self.piece = self.pieces[self.forme]
-        self.table = self.table_decalages["JLSTZ" if self.forme in "JLSTZ" else self.forme]
+        self.table = self.table_decalages[
+            "JLSTZ" if self.forme in "JLSTZ" else self.forme
+        ]
 
         self.x, self.y = (2, 19) if self.forme == "I" else (3, 20)
         self.taille = len(self.piece)
@@ -90,10 +92,21 @@ class Piece:
 
     def deplacer(self, dx: int, dy: int) -> None:
         """
-        deplace la piece dans la direction indiquee
+        deplace la piece dans la direction indiquee si possible
         """
         self.x += dx
         self.y += dy
+        if not self.grille.peut_placer(self):
+            self.x -= dx
+            self.y -= dy
+
+    def descendre_max(self) -> None:
+        """
+        descend la piece au max
+        """
+        while self.grille.peut_placer(self):
+            self.y += 1
+        self.y -= 1
 
     def tourner(self, horaire: bool, decalage=True) -> None:
         """
@@ -137,5 +150,5 @@ class Piece:
             if self.grille.peut_placer(self):
                 return True
             self.deplacer(-dx, -dy)
-            
+
         return False
